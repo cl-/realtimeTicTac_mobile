@@ -1,0 +1,186 @@
+<script src="config.js" ></script>
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=0.3">
+
+    <title>Shared Things</title>
+    <!-- JQuery etc... -->
+          <!-- <link href="jquery-ui-1.10.4.custom/css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet"> ignore jquery ui styles in favour of bootstrap --> 
+    <script src="bootstrap/js/jquery.min.js"></script> 
+
+          <script src="jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script> <!-- enough jquery ui for dragging  -->
+    <script src="jquery.ui.touch-punch/jquery.ui.touch-punch.min.js"></script> <!-- http://touchpunch.furf.com/ so jquery dragging is touch enabled -->
+
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+
+    <link type="text/css" href="sharedThingsClient.css" rel="stylesheet"></link>
+
+    <script src="sharedThingsClient.view.menu.js"></script>
+    <script src="sharedThingsClient.view.board.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="sharedThingsClient.view.geomap.js"></script>
+    <script src="sharedThingsClient.controller.board.js"></script>
+    <script src="sharedThingsClient.controller.shake.js"></script>
+    <script src="sharedThingsClient.js"></script>
+  </head>
+
+
+
+<body style="padding-top:70px; padding-bottom:70px;" >
+<!-- try {.navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top} X {.navbar-inverse }
+     have to add padding-top:70px, or padding-bottom:70px for fixed navbar
+-->
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Realtime TicTacToe</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Current World: <span id="currWorldName"></span></a></li>
+        <li><a href="#" onclick="showShareURL();"><span class="glyphicon glyphicon-link"></span>&nbsp; Share Link</a></li>
+      </ul>
+
+
+      <ul class="nav navbar-nav navbar-right">
+        <!-- added a form id here --> <!--Exercise9-->
+        <form id="newWorldForm" class="navbar-form navbar-left" hidden>
+          <div class="form-group">
+            <!-- added a newWorld id here --> <!--Exercise9-->
+            <input id= "newWorld" type="text" class="form-control" placeholder="Name of New World">
+          </div>
+          <button type="submit" class="btn btn-primary" onclick="show_addNewWorldInput(false);">Add New World</button>
+        </form>
+        <li id="newWorldBtn"><a href="#" onclick="show_addNewWorldInput(true);"><span class="glyphicon glyphicon-plus"></span>&nbsp; Add World</a></li>
+
+        <li class="dropdown"><!--World List dropdown-->
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-globe"></span>&nbsp; World List <b class="caret"></b></a>
+          <ul id="" class="dropdown-menu">
+            <li><a><strong>Join World:</strong></a></li>
+            <li class="worldListing" hidden><a href="#">Action</a></li>
+            <li class="worldListing" hidden><a href="#">Another action</a></li>
+            <li class="worldListing" hidden><a href="#">Something else here</a></li>
+            <li id="worldListDivider" class="divider" style="margin:0;"></li>
+            <li class="altOption"><a href="#" onclick="upcomingFeature();">See All</a></li>
+          </ul>
+        </li><!--end of World List dropdown-->
+        <li class="dropdown"><!--Game Options dropdown-->
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span>&nbsp; Game Options <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="#" onclick="showGeoMap();"><span class="glyphicon glyphicon-record" style="top:0.2em"></span>&nbsp; GeoMap<span class="glyphicon glyphicon-map-marker" style="left:-5.45em; top:calc(-0.6em + 0.2em); background-color:white; border-radius:10em"></span></a></li>
+            <li><a href="#" onclick="upcomingFeature();"><span class="glyphicon glyphicon-pencil"></span>&nbsp; Add Your Name</a></li>
+            <li class="divider"></li>
+            <li><a href="#" onclick="resetWorldState();"><span class="glyphicon glyphicon-off"></span>&nbsp; Reset Game</a></li>
+          </ul>
+        </li><!--end of Game Options dropdown-->
+
+      </ul><!--end of Right side of navbar-->
+    </div><!-- /.navbar-collapse -->
+
+  </div><!-- /.container-fluid -->
+</nav>
+
+  <div id="alertRegion" hidden>
+      <div id="alertSuccess" class="alert alert-success alert-dismissable">
+        <!-- <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> -->
+         <span>Successfully created world.</span>
+      </div>
+      <div id="alertWarning" class="alert alert-warning alert-dismissable">
+        <!-- <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> -->
+         <strong>Warning!</strong> <span>Better check yourself, you're not looking too good.</span>
+      </div>
+  </div>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div id="world" class="worldSpace">
+          <img id="x1" src="images/x.gif" style="z-index:2;" class="draggable" />
+          <img id="x2" src="images/x.gif" style="z-index:2;" class="draggable" />
+          <img id="x3" src="images/x.gif" style="z-index:2;" class="draggable" />
+          <img id="x4" src="images/x.gif" style="z-index:2;" class="draggable" />
+          <img id="x5" src="images/x.gif" style="z-index:2;" class="draggable" />
+          <img id="o1" src="images/o.gif" style="z-index:2;" class="draggable" />
+          <img id="o2" src="images/o.gif" style="z-index:2;" class="draggable" />
+          <img id="o3" src="images/o.gif" style="z-index:2;" class="draggable" />
+          <img id="o4" src="images/o.gif" style="z-index:2;" class="draggable" />
+          <img id="o5" src="images/o.gif" style="z-index:2;" /class="draggable" >
+          <img id="tttboard" src="images/tictactoe.gif" style="z-index:1;" class="draggable" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="shareurl panel panel-info" hidden>
+    <div class="panel-heading">Share this URL:</div>
+    <div class="panel-body">
+      <span id="shareurl-span" class="shareurl-span"></span>
+      &nbsp;<input type="button" value="Copy" onclick="selectShareURL();" class="btn btn-primary btn-xs"></input>
+      &nbsp;<input type="button" value="Close" onclick="closeShareURL();" class="btn btn-xs"></input>
+    </div>
+  </div>
+
+  <div id="layeredCanvasContainer" class="layeredCanvasContainer" hidden>
+    <canvas id="referenceCanvas" class="layeredCanvas" width="400" height="400"></canvas>
+    <div class="panel panel-info overlayInputField">
+          <div class="panel-heading overlayInputField-heading">
+            <span>Map Radius:</span>
+            <input id="geoMapRadius" type="text" value="200"></input>
+            <span>meters</span>
+          </div>
+    </div>
+
+    <div id="map-div" class="layeredDivMapOpaque"></div>
+    
+    <input type="button" value="Close GeoLocation Map" onclick="hideGeoMap();" class="btn btn-warning btn-sm overlayCloseBtn"></input>
+    <div class="overlayCloseBtn overlayGeoMsg">It may take some time to load this geolocation map.<br>The map may display incorrectly initially in some desktop browsers (though there are no problems on mobile) - go to another tab and come back.<br>Desktop browsers may give very inaccurate geolocations.</div>
+  </div>
+
+
+  <!--Exercise9-->
+  <div hidden>
+    <p id="firstText">
+      asdf
+    </p>
+    <p id="secondText">
+      asdf
+    </p>
+    <p id="thirdText">
+      asdf
+    </p>
+    <p id="fourthText">
+      asdf
+    </p>
+    <p id="fifthText">
+      asdf
+    </p>
+    <p id="sixthText">
+      asdf
+    </p>
+  </div>
+    <!-- Bootstrap -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+ 
+
+  </body>
+
+
+
+</html>

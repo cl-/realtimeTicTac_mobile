@@ -1,0 +1,118 @@
+body {
+  overflow: auto;
+  scroll: true;
+}
+
+/*.worldSpace, .draggableContainer{ position: absolute;}*/
+.draggable { position: fixed; }
+
+.offWhiteBkgd{}
+.altOption{
+  margin-bottom:-3px;
+
+  background-color: #f7f7f7;
+}
+
+.worldSpace{
+  /*width:90%;*/
+  width:500px;
+  height:500px;
+
+  padding: 15px;
+
+  border-color: gray;
+  border-style: solid;
+  border-width: 1px;
+
+  overflow: auto;
+}
+
+.shareurl {
+  position:absolute;
+  z-index: 20;
+
+  top:60px;
+  width: calc(100px + 40%);
+  margin-left: calc(50% - 50px - 20%);
+  margin-right:auto;
+
+/*  border-color: blue;
+  border-style: solid;
+  border-width: 1px;*/
+  padding: 15px;
+
+  word-wrap:break-word;
+}
+.shareurl-span{
+  background-color: #F4FAFD;
+}
+
+.layeredCanvasContainer{
+  /*position: relative;*/
+  position: absolute;
+  z-index: 20;
+
+  height:430px; width:407px;
+
+  top:60px;
+  margin-left: calc(50% - 200px);
+  margin-right:auto;
+
+  border-color: gray;
+  border-style: solid;
+  border-width: 3px;
+  /*padding: 15px;*/
+
+  background-color: white;
+/*  word-wrap:break-word;*/
+}
+
+.layeredCanvas{
+  position: absolute;
+  z-index: 4;
+}
+.layeredDivMapOpaque, .layeredCanvasOpaque{
+  position: absolute;
+  z-index: 2;
+  height:400px; width:400px;
+}
+.overlayInputField{
+  position: absolute;
+  z-index: 5;
+
+  margin:0;
+
+  vertical-align: baseline;
+  bottom:45px;
+  right:15px;
+}
+.overlayInputField-heading{
+  padding: 5px;
+}
+
+.overlayInputField input{
+  height:20px; width: 50px;
+  text-align: center;
+}
+
+.overlayCloseBtn{
+  position: absolute;
+  z-index: 5;
+
+  margin:0;
+
+  vertical-align: baseline;
+  bottom:1px;
+  right:1px;
+}
+
+.overlayGeoMsg{
+  bottom: -140px;
+
+  border-color: gray;
+  border-style: solid;
+  border-width: 1px;
+  padding: 15px;
+
+  background-color: white;
+}
